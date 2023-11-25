@@ -13,8 +13,10 @@ facteur: '(' expression ')'
     | NOMBRE
     ;
 %%
+#include <stdio.h>
+
 int yyerror(void)
 { 
-    fprintf(stderr, "erreur de syntaxe\n"); 
+    printf("erreur de syntaxe\n"); 
     return 1;
 }

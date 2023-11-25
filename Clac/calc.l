@@ -1,3 +1,5 @@
+%option noyywrap
+
 %{
 /* fichier dans lequel est defini la macro constante NOMBRE */
 #include "calc.tab.h"
