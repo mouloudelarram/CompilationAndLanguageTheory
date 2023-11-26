@@ -1,27 +1,24 @@
 %{
-#include "yacc.tab.h"
+    #include "yacc.tab.h"
+    int yyerror(char *s);
 %}
 
-%option noyywrap
+%%
+[+-]?[0-9]+       { return NUM; }
+"+"          { return ADD; }
+"-"          { return SUB; }
+"*"          { return MUL; }
+"=="         { return EQ; }
+"<"          { return LT; }
+"<="         { return LE; }
+"&&"         { return AND; }
+"||"         { return OR; }
+"!"          { return NOT; }
 
-DIGIT   [0-9]
-ID      [a-zA-Z][a-zA-Z0-9]*
-
+[ \t\n]     ;
+.           { yyerror("Unknown character"); exit(0);}
 %%
 
-"+"     { return ADD; }
-"-"     { return SUB; }
-"*"     { return MUL; }
-"/"     { return DIV; }
-"=="    { return EQ; }
-"<"     { return LT; }
-"<="    { return LTE; }
-"!"     { return NOT; }
-"&&"    { return AND; }
-"||"    { return OR; }
-{DIGIT}+    { yylval = atoi(yytext); return INT; }
-\n      { return EOL; }
-[ \t]   { /* ignore whitespace */ }
-.       { return yytext[0]; }
-
-%%
+int yywrap() {
+    return 1;
+}

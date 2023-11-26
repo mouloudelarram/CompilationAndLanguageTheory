@@ -1,31 +1,27 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    int yylex();
+    void yyerror(const char *s);
 %}
 
-%token ADD SUB MUL DIV EQ LT LTE NOT AND OR INT EOL
+%token NUM 
+%token ADD SUB MUL AND OR NOT EQ LT LE
 
 %%
-
-stmt: expr EOL  { printf("Result: %d\n", $1); }
-    ;
-
-expr: expr ADD expr  { $$ = $1 + $3; }
-    | expr SUB expr  { $$ = $1 - $3; }
-    | expr MUL expr  { $$ = $1 * $3; }
-    | expr DIV expr  { $$ = $1 / $3; }
-    | expr EQ expr   { $$ = $1 == $3; }
-    | expr LT expr   { $$ = $1 < $3; }
-    | expr LTE expr  { $$ = $1 <= $3; }
-    | NOT expr       { $$ = !$2; }
-    | expr AND expr  { $$ = $1 && $3; }
-    | expr OR expr   { $$ = $1 || $3; }
-    | INT            { $$ = $1; }
-    ;
-
+expresion   : expresion ADD expresion               { } 
+            | expresion SUB expresion               { }
+            | expresion MUL expresion               { }
+            | expresion AND expresion               { }
+            | expresion OR expresion                { }
+            | NOT expresion                         { }
+            | expresion EQ expresion                { }
+            | expresion LT expresion                { }
+            | expresion LE expresion                { }
+            | NUM                                   { }
+            ;
 %%
 
-int main() {
-    yyparse();
-    return 0;
+void yyerror(const char *s) {
+    printf("Erreur de syntaxe : %s\n", s);
 }

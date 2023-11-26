@@ -1,8 +1,9 @@
-#include "yacc.tab.h"
+#include <stdio.h>
 
 extern int yyparse();
 
 int main() {
-    yyparse();
-    return 0;
+    printf("Entrez une expression : ");
+    return yyparse();
+    
 }
