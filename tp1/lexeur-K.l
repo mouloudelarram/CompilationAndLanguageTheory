@@ -5,8 +5,8 @@
 %}
 
 %%
-0|[1-9][0-9]*           { yylval = atoi(yytext); return NUM; } /*printf ("NUM %s \n" , yytext);*/
-[a-zA-Z][a-zA-Z0-9]*    { return ID;    }
+0|[1-9][0-9]*           { yylval = atoi(yytext); return NUM; }  /*printf ("NUM %s \n" , yytext);  lexème (123, NUM) */
+[a-zA-Z][a-zA-Z0-9]*    { return ID;    }                       /*yyval = strdup(yytext); return ID OP;*/
 "+"                     { return ADD;   }
 "-"                     { return SUB;   }
 "*"                     { return MUL;   }

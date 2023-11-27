@@ -7,23 +7,29 @@
 
 %token NUM ID FUN
 %token ADD SUB MUL AND OR NOT EQ LT LE LEFT RIGHT
-%left '+' '-'
-%left '*' '/'
+
+%left ADD SUB
+%left MUL
+%left AND
+%left OR
+%right NOT
+%left EQ LT LE
+%nonassoc LEFT RIGHT
 
 %%
-expresion   : expresion ADD expresion               { } 
-            | expresion SUB expresion               { }
-            | expresion MUL expresion               { }
-            | expresion AND expresion               { }
-            | expresion OR expresion                { }
-            | NOT expresion                         { }
-            | expresion EQ expresion                { }
-            | expresion LT expresion                { }
-            | expresion LE expresion                { }
-            | LEFT expresion RIGHT                  { }
-            | NUM                                   { }
-            | ID                                    { }
-            | ID LEFT expresion RIGHT               { } /*function*/
+expression  : expression ADD expression               { }
+            | expression SUB expression               { }
+            | expression MUL expression               { }
+            | expression AND expression               { }
+            | expression OR expression                { }
+            | NOT expression                          { }
+            | expression EQ expression                { }
+            | expression LT expression                { }
+            | expression LE expression                { }
+            | LEFT expression RIGHT                   { }
+            | NUM                                     { }
+            | ID                                      { }
+            | ID LEFT expression RIGHT                { } /*function*/
             ;
 %%
 
