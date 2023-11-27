@@ -5,8 +5,10 @@
     void yyerror(const char *s);
 %}
 
-%token NUM 
+%token NUM ID FUN
 %token ADD SUB MUL AND OR NOT EQ LT LE LEFT RIGHT
+%left '+' '-'
+%left '*' '/'
 
 %%
 expresion   : expresion ADD expresion               { } 
@@ -20,10 +22,14 @@ expresion   : expresion ADD expresion               { }
             | expresion LE expresion                { }
             | LEFT expresion RIGHT                  { }
             | NUM                                   { }
+            | ID                                    { }
+            | ID LEFT expresion RIGHT               { } /*function*/
             ;
 %%
 
 void yyerror(const char *s) {
     printf("Erreur de syntaxe : %s\n", s);
 }
+ 
+
  
