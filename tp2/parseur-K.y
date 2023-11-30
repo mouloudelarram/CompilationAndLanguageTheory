@@ -9,30 +9,39 @@
 %token NUM ID
 %token ADD SUB MUL AND OR NOT EQ LT LE LEFT RIGHT
 %token INT VOID 
-%token LB RB LP RP SEMICOLON 
+%token LB RB LP RP SEMICOLON COMMA
 %token ASSIGN IF ELSE WHILE
 
 %left ADD SUB
 %left MUL
 %left AND OR
+%left ASSIGN 
 %left EQ LT LE
 %right NOT
-%left ASSIGN 
-%right INT VOIDTYPE
+%right INT VOID
 %nonassoc LB RB LP RP
 
+%start Prg
 
 %%
 Prg : Stm                                          { }
-    | Stm SEMICOLON  Prg                           { }
+    | Stm Prg                                      { }
     | LB Prg  RB                                   { }
     ;
 
-Stm : Exp SEMICOLON                                { }
-    | Exp SEMICOLON  Stm                           { }
+Stm : INT ID SEMICOLON                             { }
+    | ID ASSIGN Exp SEMICOLON                      { }
+    | INT ID Sec SEMICOLON                         { }
     | IF LP Exp RP LB Prg RB ELSE LB Prg RB        { }
+    | IF LP Exp RP Stm ELSE Stm                    { }
     | WHILE LP Exp RP LB Prg RB                    { }
+    | VOID SEMICOLON                               { }
+    | SEMICOLON                                    { }
     ;            
+
+Sec : COMMA ID Sec                                 { }
+    | COMMA ID                                     { }
+    ;
 
 Exp  : Exp ADD Exp                                 { }
             | Exp SUB Exp                          { }
@@ -47,9 +56,7 @@ Exp  : Exp ADD Exp                                 { }
             | NUM                                  { }
             | ID                                   { }
             | ID LP Exp RP                         { }
-            | INT ID                               { }
-            | ID ASSIGN Exp                        { }
-            | VOIDTYPE                             { } 
+            | VOID                            { } 
             ;
 %%
 
