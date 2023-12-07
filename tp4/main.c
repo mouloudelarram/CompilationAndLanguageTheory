@@ -8,6 +8,7 @@ FILE *file;
 int DeclationVariable = 1;
 int t = 0;
 int Adresse = -1;
+mode Mode = GLOBAL;
 
 int main() {
     file = fopen("mips.asm", "w");

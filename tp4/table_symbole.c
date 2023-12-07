@@ -14,7 +14,7 @@ void ajouterVariable(dico *d, char *nom, mode mode, n_type *type, int adresse) {
         exit(1);
     }
 
-    variable *v = chercherVariable(d, nom);
+    variable *v = chercherVariable(d, nom, mode);
     if (v != NULL) {
         printf("Variable %s deja existant\n", nom);
         yyerror("Variable deja existant");
@@ -33,9 +33,9 @@ void ajouterVariable(dico *d, char *nom, mode mode, n_type *type, int adresse) {
     }
 }
 
-variable *chercherVariable(dico *d, char *nom) {
+variable *chercherVariable(dico *d, char *nom, mode Mode) {
     for (int i = d->sommet - 1; i >= d->base; i--) {
-        if (strcmp(d->tab[i].nom, nom) == 0) {
+        if (strcmp(d->tab[i].nom, nom) == 0 && d->tab[i].mode == Mode) {
             return &(d->tab[i]);
         }
     }
@@ -44,16 +44,15 @@ variable *chercherVariable(dico *d, char *nom) {
 }
 
 variable *affectationValide(dico *d, char *nom) {
-    for (int i = d->sommet - 1; i >= d->base; i--) {
+    for (int i = d->sommet - 1; i >= 0; i--) {
         if (strcmp(d->tab[i].nom, nom) == 0) {
             return &(d->tab[i]);
         }
-        } 
-            printf("Erreur: affectation d'une variable non declrare\n");
-            yyerror("Affectation d'une variable non declrare");
+    } 
+    printf("Erreur: affectation d'une variable non declrare\n");
+    yyerror("Affectation d'une variable non declrare");
         
-    
-    
+    exit(0);    
     return NULL;
 }
 

@@ -10,6 +10,8 @@
     extern int t;
     extern int DeclationVariable;
     extern int Adresse;
+    extern mode Mode;
+
     int yylex();
     void yyerror(const char *s);
 %}
@@ -39,42 +41,30 @@
 
 %type <ival> Exp
 
-%start Bloc
+%start Prg
 
 %%
-Bloc : 
-    Prg                                            {  }
-    |LB Prg  RB                                    {  }
-    ;
 
 Prg : Stm                                          {  }
-    | Stm Prg                                      {  }
+    | Stm Prg                                      {  } 
+    | LB {Mode = LOCAL; d.base = d.sommet;} Prg RB {Mode = GLOBAL; d.base = 0;}
     ;
 
-Stm : INT ID SEMICOLON                             { ajouterVariable(&d, $2, GLOBAL, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
-    | ID ASSIGN Exp SEMICOLON                      { 
-        if(affectationValide(&d, $1)) {
-            if (DeclationVariable == 1) { 
-                DeclationVariable = 0; 
-                fprintf(file, ".text\n\tmain:\n"); 
-            }
-            fprintf(file, "\t\tli $t%d, %d\n\t\tsw $t%d, %s \n", t, $3, t++, $1); 
-                
-        }
-    }
-    | INT ID Sec SEMICOLON                         { ajouterVariable(&d, $2, GLOBAL, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
-    | IF LP Exp RP LB Prg RB ELSE LB Prg RB        { }
-    | IF LP Exp RP Stm ELSE Stm                    { }
-    | WHILE LP Exp RP LB Prg RB                    { }
+Stm : INT ID SEMICOLON                             { ajouterVariable(&d, $2, Mode, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
+    | ID ASSIGN Exp SEMICOLON                      { affectationValide(&d, $1)}
+    | INT ID Sec SEMICOLON                         { ajouterVariable(&d, $2, Mode, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
+    | IF LP Exp RP LB {Mode = LOCAL; d.base = d.sommet;} Prg RB {Mode = GLOBAL; d.base = 0;} ELSE LB {Mode = LOCAL; d.base = d.sommet;} Prg RB     {Mode = GLOBAL; d.base = 0;}
+    | WHILE LP Exp RP LB {Mode = LOCAL; d.base = d.sommet;}  Prg RB {Mode = GLOBAL; d.base = 0;}
     | VOID SEMICOLON                               {  }
+    | IF LP Exp RP Stm ELSE Stm                    {  }
     | SEMICOLON                                    {  }
     ;            
 
-Sec : COMMA ID Sec                                 { ajouterVariable(&d, $2, GLOBAL, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
-    | COMMA ID                                     { ajouterVariable(&d, $2, GLOBAL, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
+Sec : COMMA ID Sec                                 { ajouterVariable(&d, $2, Mode, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
+    | COMMA ID                                     { ajouterVariable(&d, $2, Mode, NULL, Adresse++); fprintf(file, "\t%s: .word 0\n", $2); }
     ;
 
-Exp : Exp ADD Exp                          { $$ = $1 + $3; printf("add $t: %d, \n", $1);}
+Exp : Exp ADD Exp                          { $$ = $1 + $3; }
     | Exp SUB Exp                          { $$ = $1 - $3; }
     | Exp MUL Exp                          { $$ = $1 * $3; }
     | Exp AND Exp                          { $$ = $1 && $3; }
@@ -85,8 +75,8 @@ Exp : Exp ADD Exp                          { $$ = $1 + $3; printf("add $t: %d, \
     | Exp LE Exp                           { $$ = $1 <= $3; }
     | LP Exp RP                            { $$ = $2; }
     | NUM                                  { $$ = $1; }
-    | ID                                   { $$ = 0;}
-    | ID LP Exp RP                         {  $$ = 0; } 
+    | ID                                   { }
+    | ID LP Exp RP                         { } 
     | VOID                                 { $$ = 0; } 
     ;
 %%

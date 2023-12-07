@@ -32,6 +32,6 @@ typedef struct {
 
 void initDico(dico *d);
 void ajouterVariable(dico *d, char *nom, mode mode, n_type *type, int adresse);
-variable *chercherVariable(dico *d, char *nom);
+variable *chercherVariable(dico *d, char *nom, mode Mode);
 variable *affectationValide(dico *d, char *nom);
 #endif /* TABLE_SYMBOLE_H */
